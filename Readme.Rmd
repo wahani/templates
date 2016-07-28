@@ -1,0 +1,55 @@
+## Template-Programming in R
+
+```{r eval=FALSE, echo=FALSE}
+knitr::knit("Readme.Rmd", "Readme.md")
+```
+
+
+### Some ideas on working with MySQL Queries
+
+```{r}
+library("templates")
+
+# Some helpers:
+collapseInParan <- function(x) paste("(", paste(x, collapse = ", "), ")")
+
+readFile <- function(fileName) {
+  paste(readLines(fileName), collapse = "\n")
+}
+
+deparseQuery <- function(query) {
+  deparse(substitute(query))
+}
+
+# A sql-query
+sqlTemplate <- readFile(system.file("tmp.sql", package = "templates"))
+
+cat(sqlTemplate)
+
+cat(asCharacter(
+  sqlTemplate,
+  ids = collapseInParan(1:10)
+))
+
+query <- deparseQuery(
+  `SELECT *
+    FROM someTable
+  WHERE something IN {{ ids }};`
+)
+
+cat(asCharacter(
+  query,
+  ids = collapseInParan(1:10)
+))
+```
+
+
+### Some ideas on working with functions
+
+```{r}
+funTemplate <- Template("x <- {{ arg }}
+                         x * 2")
+
+asFunction(funTemplate)(arg = 2)
+```
+

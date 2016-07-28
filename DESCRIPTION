@@ -1,0 +1,17 @@
+Package: templates
+Title: Template-Programming
+Version: 0.0.0.9000
+Authors@R: person("Sebastian", "Warnholz", email = "wahani@gmail.com", role = c("aut", "cre"))
+Description: Tools for programming with templates.
+Depends:
+    R (>= 3.3.1)
+Imports:
+    stringr,
+    dat,
+    magrittr
+License: MIT + file LICENSE
+Encoding: UTF-8
+LazyData: true
+Suggests:
+    testthat
+RoxygenNote: 5.0.1
