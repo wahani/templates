@@ -1,3 +1,3 @@
-#' @importFrom dat flatmap map
+#' @importFrom dat flatmap map extract
 #' @importFrom magrittr %>%
 NULL

@@ -4,52 +4,81 @@
 knitr::knit("Readme.Rmd", "Readme.md")
 ```
 
+### Some ideas on working with templates in R
 
-### Some ideas on working with MySQL Queries
+#### Functions:
 
 ```{r}
 library("templates")
+tFun <- templateFun(function() {
+  s <- "great idea!!!"
+  cat({{ toupper(begin) }}, s)
+  invisible(NULL)
+})
 
-# Some helpers:
-collapseInParan <- function(x) paste("(", paste(x, collapse = ", "), ")")
-
-readFile <- function(fileName) {
-  paste(readLines(fileName), collapse = "\n")
-}
-
-deparseQuery <- function(query) {
-  deparse(substitute(query))
-}
-
-# A sql-query
-sqlTemplate <- readFile(system.file("tmp.sql", package = "templates"))
-
-cat(sqlTemplate)
-
-cat(asCharacter(
-  sqlTemplate,
-  ids = collapseInParan(1:10)
-))
-
-query <- deparseQuery(
-  `SELECT *
-    FROM someTable
-  WHERE something IN {{ ids }};`
-)
-
-cat(asCharacter(
-  query,
-  ids = collapseInParan(1:10)
-))
+templateSub(tFun, begin ~ 'This is a')
+templateEval(tFun, begin ~ 'This is a')
 ```
 
 
-### Some ideas on working with functions
+#### Expressions:
 
 ```{r}
-funTemplate <- Template("x <- {{ arg }}
-                         x * 2")
+tExpr <- templateExpr(local({
+  s <- "great idea!!!"
+  cat({{ toupper(begin) }}, s)
+}))
 
-asFunction(funTemplate)(arg = 2)
+templateSub(tExpr, begin ~ 'This is a')
+templateEval(tExpr, begin ~ 'This is a')
+templateEvalHere(tExpr)
+```
+
+
+#### Character:
+
+```{r}
+tChar <- templateChar('local({
+  s <- "great idea!!!"
+  cat({{ toupper(begin) }}, s)
+})')
+
+templateSub(tExpr, begin ~ 'This is a')
+templateEval(tExpr, begin ~ 'This is a')
+templateEvalHere(tExpr)
+```
+
+
+### Some more usefull examples
+
+
+#### MySQL Queries:
+
+```{r}
+templateRead <- function(fileName) {
+  templateChar(paste(readLines(fileName), collapse = "\n"))
+}
+
+collapseInParan <- function(x) paste("(", paste(x, collapse = ", "), ")")
+
+sqlTemplate <- templateRead(system.file("tmp.sql", package = "templates"))
+
+sqlTemplate
+
+templateSub(
+  sqlTemplate,
+  ids = collapseInParan(1:10)
+)
+
+sqlTemplate <- templateExpr(
+  `SELECT *
+    FROM someTable
+  WHERE something IN {{ collapseInParan(ids) }};`
+)
+
+templateEval(
+  sqlTemplate, 
+  ids ~ 1:10
+)
 ```
 

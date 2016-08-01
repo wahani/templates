@@ -2,28 +2,173 @@
 
 
 
+### Some ideas on working with templates in R
 
-### Some ideas on working with MySQL Queries
+#### Functions:
 
 
 ```r
 library("templates")
+tFun <- templateFun(function() {
+  s <- "great idea!!!"
+  cat({{ toupper(begin) }}, s)
+  invisible(NULL)
+})
 
-# Some helpers:
+templateSub(tFun, begin ~ 'This is a')
+```
+
+```
+## function () 
+## {
+##     s <- "great idea!!!"
+##     cat(toupper("This is a"), s)
+##     invisible(NULL)
+## }
+```
+
+```r
+templateEval(tFun, begin ~ 'This is a')
+```
+
+```
+## function () 
+## {
+##     s <- "great idea!!!"
+##     cat("THIS IS A", s)
+##     invisible(NULL)
+## }
+```
+
+
+#### Expressions:
+
+
+```r
+tExpr <- templateExpr(local({
+  s <- "great idea!!!"
+  cat({{ toupper(begin) }}, s)
+}))
+
+templateSub(tExpr, begin ~ 'This is a')
+```
+
+```
+## local({
+##     s <- "great idea!!!"
+##     cat(toupper("This is a"), s)
+## })
+```
+
+```
+## local({
+##     s <- "great idea!!!"
+##     cat(toupper("This is a"), s)
+## })
+```
+
+```r
+templateEval(tExpr, begin ~ 'This is a')
+```
+
+```
+## local({
+##     s <- "great idea!!!"
+##     cat("THIS IS A", s)
+## })
+```
+
+```
+## local({
+##     s <- "great idea!!!"
+##     cat("THIS IS A", s)
+## })
+```
+
+```r
+templateEvalHere(tExpr)
+```
+
+```
+## Error in eval(expr, envir, enclos): could not find function "templateEvalHere"
+```
+
+
+#### Character:
+
+
+```r
+tChar <- templateChar('local({
+  s <- "great idea!!!"
+  cat({{ toupper(begin) }}, s)
+})')
+
+templateSub(tExpr, begin ~ 'This is a')
+```
+
+```
+## local({
+##     s <- "great idea!!!"
+##     cat(toupper("This is a"), s)
+## })
+```
+
+```
+## local({
+##     s <- "great idea!!!"
+##     cat(toupper("This is a"), s)
+## })
+```
+
+```r
+templateEval(tExpr, begin ~ 'This is a')
+```
+
+```
+## local({
+##     s <- "great idea!!!"
+##     cat("THIS IS A", s)
+## })
+```
+
+```
+## local({
+##     s <- "great idea!!!"
+##     cat("THIS IS A", s)
+## })
+```
+
+```r
+templateEvalHere(tExpr)
+```
+
+```
+## Error in eval(expr, envir, enclos): could not find function "templateEvalHere"
+```
+
+
+### Some more usefull examples
+
+
+#### MySQL Queries:
+
+
+```r
+templateRead <- function(fileName) {
+  templateChar(paste(readLines(fileName), collapse = "\n"))
+}
+
 collapseInParan <- function(x) paste("(", paste(x, collapse = ", "), ")")
 
-readFile <- function(fileName) {
-  paste(readLines(fileName), collapse = "\n")
-}
+sqlTemplate <- templateRead(system.file("tmp.sql", package = "templates"))
 
-deparseQuery <- function(query) {
-  deparse(substitute(query))
-}
+sqlTemplate
+```
 
-# A sql-query
-sqlTemplate <- readFile(system.file("tmp.sql", package = "templates"))
-
-cat(sqlTemplate)
+```
+## SELECT *
+## FROM someTable
+## WHERE something IN {{ ids }};
 ```
 
 ```
@@ -33,10 +178,16 @@ cat(sqlTemplate)
 ```
 
 ```r
-cat(asCharacter(
+templateSub(
   sqlTemplate,
   ids = collapseInParan(1:10)
-))
+)
+```
+
+```
+## SELECT *
+## FROM someTable
+## WHERE something IN ( 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 );
 ```
 
 ```
@@ -46,36 +197,27 @@ cat(asCharacter(
 ```
 
 ```r
-query <- deparseQuery(
+sqlTemplate <- templateExpr(
   `SELECT *
     FROM someTable
-  WHERE something IN {{ ids }};`
+  WHERE something IN {{ collapseInParan(ids) }};`
 )
 
-cat(asCharacter(
-  query,
-  ids = collapseInParan(1:10)
-))
+templateEval(
+  sqlTemplate, 
+  ids ~ 1:10
+)
 ```
 
 ```
 ## SELECT *
 ##     FROM someTable
-##   WHERE something IN ( 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 );
-```
-
-
-### Some ideas on working with functions
-
-
-```r
-funTemplate <- Template("x <- {{ arg }}
-                         x * 2")
-
-asFunction(funTemplate)(arg = 2)
+##   WHERE something IN ( 1:10 );
 ```
 
 ```
-## [1] 4
+## SELECT *
+##     FROM someTable
+##   WHERE something IN ( 1:10 );
 ```
 
