@@ -39,18 +39,17 @@ templateEvalHere(tExpr)
 
 ```{r}
 tChar <- templateChar('local({
-  s <- "great idea!!!"
+  s <- "great idea!!!\n"
   cat({{ toupper(begin) }}, s)
 })')
 
 templateSub(tExpr, begin ~ 'This is a')
 templateEval(tExpr, begin ~ 'This is a')
-templateEvalHere(tExpr)
+templateEvalHere(templateEval(tExpr, begin ~ 'This is a'))
 ```
 
 
 ### Some more usefull examples
-
 
 #### MySQL Queries:
 

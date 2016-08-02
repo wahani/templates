@@ -2,7 +2,7 @@ test_that("Template", {
 
   expectEqual <- function(a, b) testthat::expect_equal(a, b)
 
-  ##############################################################################
+##############################################################################
 
   t1 <- templateExpr({
     return({{ 2 * a }})
@@ -24,15 +24,16 @@ test_that("Template", {
   )
 
   sqlTemplate <- templateExpr(
-    `{{ collapseInParan(ids) }}`
+    `( {{ ids }} )`
   )
 
   expectEqual(
-    templateEval(
-      sqlTemplate,
-      ids ~ 1:2
-    ),
-    "( 1, 2 )"
+    unclass(
+      templateEval(
+        sqlTemplate,
+        ids ~ 1:2
+      )),
+    "( 1:2 )"
   )
 
 
@@ -57,7 +58,7 @@ test_that("Template", {
   )
 
 
-  ##############################################################################
+##############################################################################
 
   t3 <- templateChar(
     "{{ (function() {1})() }}
@@ -75,7 +76,7 @@ test_that("Template", {
   )
 
 
-  ##############################################################################
+##############################################################################
 
   t4 <- templateChar(
     "{{ a }}"
@@ -104,4 +105,20 @@ test_that("Template", {
     1
   )
 
+##############################################################################
+
+  t5 <- templateExpr({
+    x <- 2
+  })
+
+  t6 <- templateExpr({
+    y <- 1
+    y
+  })
+
+  templateEvalHere(t5)
+  expectEqual(x, 2)
+  expectEqual(templateEvalLocal(t6), 1)
+  expectEqual(exists("y"), FALSE)
+  
 })

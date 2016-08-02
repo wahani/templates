@@ -5,6 +5,8 @@
 \alias{templateEval}
 \alias{templateEval.default}
 \alias{templateEval.templateFun}
+\alias{templateEvalHere}
+\alias{templateEvalLocal}
 \alias{templateSub}
 \alias{templateSub.default}
 \alias{templateSub.templateFun}
@@ -23,6 +25,10 @@ templateSub(x, ...)
 \method{templateSub}{templateFun}(x, ...)
 
 templateAsFun(x, parent = parent.frame())
+
+templateEvalHere(template, envir = parent.frame(), ...)
+
+templateEvalLocal(template, envir = parent.frame(), ...)
 }
 \arguments{
 \item{x}{(Template)}

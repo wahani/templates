@@ -108,6 +108,19 @@ templateAsFun <- function(x, parent = parent.frame()) {
 
 }
 
+#' @rdname utils
+#' @export
+templateEvalHere <- function(template, envir = parent.frame(), ...) {
+  eval(parse(text = template), envir = envir, ...)
+}
+
+#' @rdname utils
+#' @export
+templateEvalLocal <- function(template, envir = parent.frame(), ...) {
+  eval(parse(text = template), envir = new.env(parent = envir), ...)
+}
+
+
 addClass <- function (x, class) {
     class(x) <- unique(c(class, class(x)))
     x

@@ -45,6 +45,6 @@ as.function.templateFun <- function(x, ..., parent = parent.frame()) {
 
 #' @export
 print.template <- function(x, ...) {
-  cat(x)
+  cat("\n", x, "\n")
   x
 }
