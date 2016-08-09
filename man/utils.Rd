@@ -4,25 +4,25 @@
 \alias{templateAsFun}
 \alias{templateEval}
 \alias{templateEval.default}
-\alias{templateEval.templateFun}
+\alias{templateEval.function}
 \alias{templateEvalHere}
 \alias{templateEvalLocal}
 \alias{templateSub}
 \alias{templateSub.default}
-\alias{templateSub.templateFun}
+\alias{templateSub.function}
 \title{Util functions}
 \usage{
 templateEval(x, ...)
 
 \method{templateEval}{default}(x, ..., parent = parent.frame())
 
-\method{templateEval}{templateFun}(x, ..., parent = parent.frame())
+\method{templateEval}{function}(x, ..., parent = parent.frame())
 
 templateSub(x, ...)
 
 \method{templateSub}{default}(x, ...)
 
-\method{templateSub}{templateFun}(x, ...)
+\method{templateSub}{function}(x, ...)
 
 templateAsFun(x, parent = parent.frame())
 

@@ -4,31 +4,24 @@
 #'
 #' @export
 #' @rdname templates
-templateChar <- function(x) {
-  addClass(x, c("templateChar", "template"))
+template <- function(x) {
+
+  x <- substitute(x)
+  if (is.character(x))
+    x %>% addClass("template")
+  else {
+    deparse(x) %>%
+      stringr::str_replace_all("^[\\\"\\\']|[\\\"\\\']$", "") %>%
+      paste(collapse = "\n") %>%
+      stringr::str_replace_all("\\{\\\n\ +\\{", "{{") %>%
+      stringr::str_replace_all("\\}\\\n\ +\\}", "}}") %>%
+      addClass("template")                            
+  }
+
 }
 
 #' @export
-#' @rdname templates
-templateExpr <- function(x) {
-
-  deparse(substitute(x)) %>%
-    paste(collapse = "\n") %>%
-    stringr::str_replace_all("\\{\\\n\ +\\{", "{{") %>%
-    stringr::str_replace_all("\\}\\\n\ +\\}", "}}") %>%
-    templateChar %>%
-    addClass("templateExpr")
-  
-}
-
-#' @export
-#' @rdname templates
-templateFun <- function(x) {
-  dat:::addClass(x, "templateFun")
-}
-
-#' @export
-as.function.templateChar <- function(x, ..., parent = parent.frame()) {
+as.function.template <- function(x, ..., parent = parent.frame()) {
   
   if (length(list(...)) > 0) {
     x <- templateSub(x, ...)
@@ -39,12 +32,16 @@ as.function.templateChar <- function(x, ..., parent = parent.frame()) {
 }
 
 #' @export
-as.function.templateFun <- function(x, ..., parent = parent.frame()) {
-  templateSub(x, ...)
+print.template <- function(x, ...) {
+  cat(x, "\n")
+  invisible(x)
 }
 
 #' @export
-print.template <- function(x, ...) {
-  cat("\n", x, "\n")
-  x
+update.template <- function(object, ..., eval = FALSE) {
+  if (eval) templateEval(object, ...)
+  else templateSub(object, ...)
 }
+
+#' @export
+update.function <- update.template

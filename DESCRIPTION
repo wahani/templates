@@ -4,11 +4,13 @@ Version: 0.0.0.9000
 Authors@R: person("Sebastian", "Warnholz", email = "wahani@gmail.com", role = c("aut", "cre"))
 Description: Tools for programming with templates.
 Depends:
-    R (>= 3.3.1)
+    R (>= 3.3.1),
+    methods
 Imports:
     stringr,
     dat,
-    magrittr
+    magrittr,
+    modules
 License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true

@@ -24,10 +24,10 @@ templateEval.default <- function(x, ..., parent = parent.frame()) {
 
 #' @export
 #' @rdname utils
-templateEval.templateFun <- function(x, ..., parent = parent.frame()) {
+templateEval.function <- function(x, ..., parent = parent.frame()) {
 
   newBody <- templateEval(
-    eval(call("templateExpr", body(x))),
+    eval(call("template", body(x))),
     ...,
     parent = parent
   )
@@ -45,22 +45,31 @@ templateSub <- function(x, ...) UseMethod("templateSub")
 #' @export
 templateSub.default <- function(x, ...) {
 
-  subsituter <- function(x, substitutes, ...) {
-    map(names(substitutes) ~ substitutes ~ x, sub)
+  checkIntput <- function(x) {
+    map(x, warnings$hasLengthOne)
+    invisible(x)
   }
 
-  templateUtility(x, ..., utility = subsituter)
+  substituter <- function(x, substitutes, ...) {
+    subs <- map(substitutes, ~ parse(text = .))
+    subs <- map(checkIntput(subs), ~ .[[1]])
+    subCall <- as.call(
+      c(quote(substitute), parse(text = x), quote(subs))
+    )
+    flatmap(x, x ~ deparse(eval(subCall)))
+  }
+
+  templateUtility(x, ..., utility = substituter)
   
 }
-
 
 templateUtility <- function(x, ..., parent, utility) {
 
   rememberClass <- class(x)
 
   substitutes <- list(...)
-  ind <- flatmap(substitutes, ~ inherits(., "formula"))
-
+  ind <- flatmap(substitutes, inherits , "formula")
+  
   if (sum(ind) > 0) {
     subtExpr <- extract(substitutes, ind) %>% flatmap(f ~ deparse(f[[2]]))
     exprList <- extract(substitutes, ind) %>% flatmap(f ~ deparse(f[[3]]))
@@ -87,9 +96,9 @@ templateUtility <- function(x, ..., parent, utility) {
 
 #' @rdname utils
 #' @export
-templateSub.templateFun <- function(x, ...) {
+templateSub.function <- function(x, ...) {
 
-  newBody <- templateSub(eval(call("templateExpr", body(x))), ...)
+  newBody <- templateSub(eval(call("template", body(x))), ...)
   body(x) <- parse(text = unclass(newBody))
   x
   

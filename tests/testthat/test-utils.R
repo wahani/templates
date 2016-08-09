@@ -4,7 +4,7 @@ test_that("Template", {
 
 ##############################################################################
 
-  t1 <- templateExpr({
+  t1 <- template({
     return({{ 2 * a }})
   })
 
@@ -23,36 +23,48 @@ test_that("Template", {
     2
   )
 
-  sqlTemplate <- templateExpr(
-    `( {{ ids }} )`
+  sqlTemplate <- template(
+    `( {{ collapse(ids) }} )`
   )
+
+  collapse <- function(x) paste(x, collapse = ", ")
 
   expectEqual(
     unclass(
-      templateEval(
+      update(
         sqlTemplate,
-        ids ~ 1:2
+        ids = 1:2,
+        eval = TRUE
       )),
-    "( 1:2 )"
+    "( 1, 2 )"
   )
 
+  testthat::expect_warning(
+    unclass(
+      update(
+        sqlTemplate,
+        ids = 1:2,
+        eval = FALSE
+      )),
+    "length = 1"
+  )
 
-  t2 <- templateFun(function(x) {
+  t2 <- function(x) {
     return({{ 2 * a }})
-  })
+  }
 
   expectEqual(
-    as.function(
-      t2,
-      a ~ x * 2
-    )(2),
+    update(t2, a ~ x * 2, eval = FALSE)(2),
     8
   )
 
   expectEqual(
     local({
       a <- 2
-      templateEval(t2)(80)
+      t2 <- function(x) {
+        return({{ 2 * a }})
+      }
+      update(t2, eval = FALSE)(80)
     }),
     4
   )
@@ -60,32 +72,33 @@ test_that("Template", {
 
 ##############################################################################
 
-  t3 <- templateChar(
+  t3 <- template(
     "{{ (function() {1})() }}
-     {{ \"'HuHu'\" }}"
+     {{ '\"HuHu\"' }}"
   )
 
-  t3Eval <- templateChar(
+  t3Eval <- template(
     "1
-     'HuHu'"
+     \"HuHu\""
   )
 
   expectEqual(
-    templateEval(t3),
-    t3Eval
+    unclass(update(t3, eval = TRUE)),
+    unclass(t3Eval)
   )
 
 
 ##############################################################################
 
-  t4 <- templateChar(
+  t4 <- template(
     "{{ a }}"
   )
 
   expectEqual(
     as.function(
       t4,
-      a ~ 2
+      a ~ 2,
+      eval = FALSE
     )(),
     2
   )
@@ -93,7 +106,8 @@ test_that("Template", {
   expectEqual(
     as.function(
       t4,
-      a ~ x * 2
+      a ~ x * 2,
+      eval = FALSE
     )(x = 2),
     4
   )
@@ -107,11 +121,11 @@ test_that("Template", {
 
 ##############################################################################
 
-  t5 <- templateExpr({
+  t5 <- template({
     x <- 2
   })
 
-  t6 <- templateExpr({
+  t6 <- template({
     y <- 1
     y
   })
