@@ -1,6 +1,6 @@
 #' Util functions
 #'
-#' @param x (Template)
+#' @param x (template)
 #' @param ... dots
 #' @param parent (environment)
 #'
@@ -10,7 +10,7 @@ templateEval <- function(x, ...) UseMethod("templateEval")
 
 #' @export
 #' @rdname utils
-templateEval.default <- function(x, ..., parent = parent.frame()) {
+templateEval.default <- function(x, ...) {
 
   evaluator <- function(x, envir, enclos) {
      flatmap(x, function(sexpr) {
@@ -18,18 +18,18 @@ templateEval.default <- function(x, ..., parent = parent.frame()) {
     }) 
   }
 
-  templateUtility(x, ..., parent = parent, utility = evaluator)
+  templateUtility(x, ..., utility = evaluator)
 
 }
 
 #' @export
 #' @rdname utils
-templateEval.function <- function(x, ..., parent = parent.frame()) {
+templateEval.function <- function(x, ...) {
 
   newBody <- templateEval(
     eval(call("template", body(x))),
     ...,
-    parent = parent
+    parent = attr(x, "envir")
   )
   
   body(x) <- parse(text = unclass(newBody))
@@ -51,6 +51,7 @@ templateSub.default <- function(x, ...) {
   }
 
   substituter <- function(x, substitutes, ...) {
+
     subs <- map(substitutes, ~ parse(text = .))
     subs <- map(checkIntput(subs), ~ .[[1]])
     subCall <- as.call(
@@ -63,9 +64,7 @@ templateSub.default <- function(x, ...) {
   
 }
 
-templateUtility <- function(x, ..., parent, utility) {
-
-  rememberClass <- class(x)
+templateUtility <- function(x, ..., utility) {
 
   substitutes <- list(...)
   ind <- flatmap(substitutes, inherits , "formula")
@@ -82,19 +81,16 @@ templateUtility <- function(x, ..., parent, utility) {
     unlist %>%
     stringr::str_replace_all("(^\\{\\{)|(\\}\\}$)", "") %>%
     stringr::str_trim() %>%
-    utility(substitutes, parent)
+    utility(substitutes, attr(x, "envir"))
 
   ret <- Reduce(x = replacements, init = x, function(acc, r) {
     stringr::str_replace(acc, getPattern(), r)
   })
 
-  class(ret) <- rememberClass
-  ret
+  template(ret, attr(x, "envir"))
   
 }
 
-
-#' @rdname utils
 #' @export
 templateSub.function <- function(x, ...) {
 
@@ -104,8 +100,6 @@ templateSub.function <- function(x, ...) {
   
 }
 
-#' @rdname utils
-#' @export
 templateAsFun <- function(x, parent = parent.frame()) {
 
   force(x)
@@ -128,12 +122,4 @@ templateEvalHere <- function(template, envir = parent.frame(), ...) {
 templateEvalLocal <- function(template, envir = parent.frame(), ...) {
   eval(parse(text = template), envir = new.env(parent = envir), ...)
 }
-
-
-addClass <- function (x, class) {
-    class(x) <- unique(c(class, class(x)))
-    x
-}
-
-getPattern <- function(case) "\\{\\{((?!\\{\\{)[\\\n[:print:]])*\\}\\}"
 

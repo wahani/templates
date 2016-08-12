@@ -4,10 +4,12 @@
 \alias{template}
 \title{Templates constructors}
 \usage{
-template(x)
+template(x, envir = parent.frame())
 }
 \arguments{
-\item{x}{}
+\item{x}{(character | expression)}
+
+\item{envir}{(environment)}
 }
 \description{
 Templates constructors

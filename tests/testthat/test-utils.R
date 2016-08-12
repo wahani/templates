@@ -11,7 +11,8 @@ test_that("Template", {
   expectEqual(
     as.function(
       t1,
-      a ~ x * 2
+      a ~ x * 2,
+      eval = FALSE
     )(x = 1),
     4
   )
@@ -30,7 +31,7 @@ test_that("Template", {
   collapse <- function(x) paste(x, collapse = ", ")
 
   expectEqual(
-    unclass(
+    as.character(
       update(
         sqlTemplate,
         ids = 1:2,
@@ -86,7 +87,6 @@ test_that("Template", {
     unclass(update(t3, eval = TRUE)),
     unclass(t3Eval)
   )
-
 
 ##############################################################################
 
