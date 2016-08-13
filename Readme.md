@@ -23,12 +23,8 @@ collapseInParan <- function(x) {
 
 update(
   sqlTemplate, 
-  ids = dput(1:10)
+  ids = 1:10
 )
-```
-
-```
-## 1:10
 ```
 
 ```
@@ -63,14 +59,14 @@ update(tFun, begin ~ "This is a")
 ```
 
 ```r
-update(tFun, begin ~ "This is a", eval = TRUE)
+update(tFun, begin ~ "This is a", eval = FALSE)
 ```
 
 ```
 ## function () 
 ## {
 ##     s <- "great idea!!!"
-##     cat("THIS IS A", s, "\n")
+##     cat(toupper("This is a"), s, "\n")
 ##     invisible(NULL)
 ## }
 ```
