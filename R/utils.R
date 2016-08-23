@@ -1,40 +1,61 @@
-#' Util functions
+#' Update and evaluate templates
 #'
-#' @param x (template)
-#' @param ... dots
-#' @param envir (environment)
+#' Functions operating on \link{tmpl} objects. They can be updated and / or
+#' evaluated as an expression.
+#' 
+#' @param .t (tmpl) and object of class 'tmpl'
+#' @param ... (name = value | name ~ value) name-value expressions used to
+#'   update the snippets in \code{x}
+#' @param .envir (environment) the environment in which the template is
+#'   evaluated
 #'
+#' @details
+#' 
+#' \code{tmplUpdate} will evaluate all snippets in a template. Objects are
+#' searched for in the list of arguments supplied as \code{...} and the
+#' environment of the template. The results are substituted with the snippts.
+#' 
+#' @examples
+#' tmpl("This is {{ a }} very similar to {{ b }}", a = "actually", b = "sprintf")
+#' tmpl("But I consider it to be ({{ sprintf('%i', a) }}) orthogonal", a = 1.0)
+#' tmpl("and ({{ sprintf('%i', b) }}) with a different scope:", b = 2.0)
+#' tmpl("SELECT {{ var }} FROM {{ table }} WHERE {{ condition }};",
+#'      var = "someVar", table = "someTable", condition = "primaryKey = 1")
+#' template <- tmpl("cat({{ toupper(x) }})")
+#' tmplUpdate(template, x ~ "hi")
+#' tmplEval(template, x ~ "hi")
+#' 
 #' @rdname utils
 #' @export
-tmplUpdate <- function(x, ...) UseMethod("tmplUpdate")
+tmplUpdate <- function(.t, ...) UseMethod("tmplUpdate")
 
 #' @export
 #' @rdname utils
-tmplUpdate.default <- function(x, ...) {
+tmplUpdate.tmpl <- function(.t, ...) {
 
   evaluator <- function(x, envir, enclos) {
      flatmap(x, function(sexpr) {
       as.character(eval(parse(text = sexpr), envir = envir, enclos = enclos))
-    }) 
+    })
   }
 
-  tmplUtility(x, ..., utility = evaluator)
+  tmplUtility(.t, ..., .utility = evaluator)
 
 }
 
 #' @export
 #' @rdname utils
-tmplUpdate.function <- function(x, ...) {
+tmplUpdate.function <- function(.t, ...) {
 
-  newBody <- as.formula(paste("~", paste(deparse(body(x)), collapse = "\n")))
-  newBody <- tmplUpdate(tmpl(newBody, envir = environment(x)), ...)
+  newBody <- as.formula(paste("~", paste(deparse(body(.t)), collapse = "\n")))
+  newBody <- tmpl(newBody, ...)
 
-  body(x) <- parse(text = unclass(newBody))
-  x
+  body(.t) <- parse(text = unclass(newBody))
+  .t
   
 }
 
-tmplUtility <- function(x, ..., utility) {
+tmplUtility <- function(.t, ..., .utility) {
 
   substitutes <- list(...)
   ind <- flatmap(substitutes, inherits , "formula")
@@ -47,23 +68,35 @@ tmplUtility <- function(x, ..., utility) {
   }
 
   replacements <-
-    stringr::str_extract_all(x, pattern = getPattern()) %>%
+    stringr::str_extract_all(.t, pattern = getPattern()) %>%
     unlist %>%
     stringr::str_replace_all("(^\\{\\{)|(\\}\\}$)", "") %>%
     stringr::str_trim() %>%
-    utility(substitutes, attr(x, "envir"))
+    .utility(substitutes, attr(.t, "envir"))
 
-  ret <- Reduce(x = replacements, init = x, function(acc, r) {
+  ret <- Reduce(x = replacements, init = .t, function(acc, r) {
     stringr::str_replace(acc, getPattern(), r)
   })
 
-  tmpl(ret, envir = attr(x, "envir"))
+  tmplConstructor(ret, .envir = attr(.t, "envir"))
   
 }
 
 #' @rdname utils
 #' @export
-tmplEval <- function(x, envir = new.env(parent = parent.frame()), ...) {
-  template <- tmplUpdate(x, ...)
-  eval(parse(text = template), envir = envir, enclos = attr(x, "envir"))
+tmplEval <- function(.t, ..., .envir = new.env(parent = parent.frame())) {
+  template <- tmplUpdate(.t, ...)
+  eval(parse(text = template), envir = .envir, enclos = attr(.t, "envir"))
+}
+
+#' @rdname utils
+#' @export
+tmplAsFun <- function(.t, ...) {
+
+  .t <- tmplUpdate(.t, ...)
+
+  function(...) {
+    eval(parse(text = .t), envir = list(...), enclos = attr(.t, "envir"))
+  }
+    
 }

@@ -1,54 +1,74 @@
-#' Templates constructors
+#' Template constructors
 #'
-#' @param x (character | expression)
-#' @param envir (environment)
-#' @param ... (name = value | name ~ value) name-value expressions
+#' \code{tmpl} is the constructor function for template objects. 
+#'
+#' @param .t something that can be interpreted as template. See defined methods
+#'   for options.
+#' @param .envir (environment) the environment in which template snippets are
+#'   evaluated. For \code{formula}s and \code{function}s their environment is
+#'   used.
+#' @param ... (name = value | name ~ value) name-value expressions passed on to
+#'   \link{tmplUpdate}
+#'
+#' @details Objects of class \code{tmpl} are stored as a character of length
+#'   one. They can contain 'snippets' to be evaluated. These snippets are
+#'   identified by an opening \code{\{\{} and closing \code{\}\}}. The
+#'   environment in which they are evaluated is stored in the object. They can
+#'   be further augmented by supplying arguments in \code{...}.
+#'
+#' @examples
+#'
+#' tmpl("Hi {{ toupper(a) }}!", a = "there")
+#' tmpl( ~ {y <- {{ a }}}, a ~ x + 1)
+#' tmpl(function(x) {{ a }} + x, a ~ 1)
 #'
 #' @export
-#' @rdname templates
-tmpl <- function(x, ..., envir = parent.frame()) {
+#' @rdname tmpl
+tmpl <- function(.t, ...) UseMethod("tmpl")
 
-  constructor <- function(x, envir) {
-    addAttr(x, class = "template", envir = envir)
-  }
+#' @export
+#' @rdname tmpl
+tmpl.character <- function(.t, ..., .envir = parent.frame()) {
 
-  if (is(x, "character"))
-    out <- constructor(x, envir)
-  else if (is(x, "formula")) {
-    out <- x[[2]] %>%
-      deparse() %>%
-      paste(collapse = "\n") %>%
-      stringr::str_replace_all("\\{\\\n\ +\\{", "{{") %>%
-      stringr::str_replace_all("\ *\\}\\\n\ *\\}", "}}") %>%
-      constructor(envir)
-  }
-  else if (is(x, "template"))
-    out <- x
-  else if (is(x, "function"))
-    out <- x
-  else stop("can't handle input")
+  out <- tmplConstructor(.t, .envir)
 
   if (length(list(...)) == 0) out
   else tmplUpdate(out, ...)
+  
+}
 
+tmplConstructor <- function(.t, .envir) {
+  addAttr(.t, class = "tmpl", envir = .envir)
 }
 
 #' @export
-as.function.template <- function(x, ..., parent = attr(x, "envir")) {
+#' @rdname tmpl
+tmpl.formula <- function(.t, ...) {
 
-  x <- tmplUpdate(x, ...)
-
-  force(x)
-  force(parent)
-
-  function(...) {
-    eval(parse(text = x), envir = list(...), enclos = parent)
-  }
-    
+  out <- .t[[2]] %>%
+    deparse() %>%
+    paste(collapse = "\n") %>%
+    stringr::str_replace_all("\\{\\\n\ *\\{", "{{") %>%
+    stringr::str_replace_all("\ *\\}\\\n\ *\\}", "}}")
+  
+  tmpl.character(out, ..., .envir = environment(.t))
+  
 }
 
 #' @export
-print.template <- function(x, ...) {
+#' @rdname tmpl
+tmpl.tmpl <- function(.t, ...) {
+  tmplUpdate(.t, ...)
+}
+
+#' @export
+#' @rdname tmpl
+tmpl.function <- function(.t, ...) {
+  tmplUpdate(.t, ...)
+}
+
+#' @export
+print.tmpl <- function(x, ...) {
   cat(x, "\n")
   invisible(x)
 }

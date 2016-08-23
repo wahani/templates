@@ -9,7 +9,7 @@ test_that("Template", {
   })
 
   expectEqual(
-    as.function(
+    tmplAsFun(
       t1,
       a ~ x * 2
     )(x = 1),
@@ -17,7 +17,7 @@ test_that("Template", {
   )
 
   testthat::expect_error(
-    as.function(t1), "'a' not found"
+    tmplAsFun(t1), "'a' not found"
   )
 
   sqlTemplate <- tmpl(
@@ -69,7 +69,7 @@ test_that("Template", {
   )
 
   expectEqual(
-    as.function(
+    tmplAsFun(
       t4,
       a ~ 2
     )(),
@@ -77,7 +77,7 @@ test_that("Template", {
   )
 
   expectEqual(
-    as.function(
+    tmplAsFun(
       t4,
       a ~ x * 2  
     )(x = 2),
@@ -85,7 +85,7 @@ test_that("Template", {
   )
 
   expectEqual(
-    as.function(
+    tmplAsFun(
       t4,
       a ~ a
     )(a = 1),
@@ -106,5 +106,15 @@ test_that("Template", {
   expectEqual(tmplEval(t5), 2)
   expectEqual(tmplEval(t6), 1)
   expectEqual(exists("y"), FALSE)
+
+################################################################################
+
+  expectEqual(
+    local({
+      dep <- function() 1
+      tmplEval(tmpl("{{ dep() }}"), a ~ trigger)
+    }),
+    1
+  )
   
 })
