@@ -2,15 +2,15 @@
 #'
 #' @param x (template)
 #' @param ... dots
-#' @param parent (environment)
+#' @param envir (environment)
 #'
 #' @rdname utils
 #' @export
-templateEval <- function(x, ...) UseMethod("templateEval")
+tmplUpdate <- function(x, ...) UseMethod("tmplUpdate")
 
 #' @export
 #' @rdname utils
-templateEval.default <- function(x, ...) {
+tmplUpdate.default <- function(x, ...) {
 
   evaluator <- function(x, envir, enclos) {
      flatmap(x, function(sexpr) {
@@ -18,53 +18,23 @@ templateEval.default <- function(x, ...) {
     }) 
   }
 
-  templateUtility(x, ..., utility = evaluator)
+  tmplUtility(x, ..., utility = evaluator)
 
 }
 
 #' @export
 #' @rdname utils
-templateEval.function <- function(x, ...) {
+tmplUpdate.function <- function(x, ...) {
 
-  newBody <- templateEval(
-    eval(call("template", body(x))),
-    ...,
-    parent = attr(x, "envir")
-  )
-  
+  newBody <- as.formula(paste("~", paste(deparse(body(x)), collapse = "\n")))
+  newBody <- tmplUpdate(tmpl(newBody, envir = environment(x)), ...)
+
   body(x) <- parse(text = unclass(newBody))
   x
   
 }
 
-#' @rdname utils
-#' @export
-templateSub <- function(x, ...) UseMethod("templateSub")
-
-#' @rdname utils
-#' @export
-templateSub.default <- function(x, ...) {
-
-  checkIntput <- function(x) {
-    map(x, warnings$hasLengthOne)
-    invisible(x)
-  }
-
-  substituter <- function(x, substitutes, ...) {
-
-    subs <- map(substitutes, ~ parse(text = .))
-    subs <- map(checkIntput(subs), ~ .[[1]])
-    subCall <- as.call(
-      c(quote(substitute), parse(text = x), quote(subs))
-    )
-    flatmap(x, x ~ deparse(eval(subCall)))
-  }
-
-  templateUtility(x, ..., utility = substituter)
-  
-}
-
-templateUtility <- function(x, ..., utility) {
+tmplUtility <- function(x, ..., utility) {
 
   substitutes <- list(...)
   ind <- flatmap(substitutes, inherits , "formula")
@@ -87,39 +57,13 @@ templateUtility <- function(x, ..., utility) {
     stringr::str_replace(acc, getPattern(), r)
   })
 
-  template(ret, attr(x, "envir"))
+  tmpl(ret, envir = attr(x, "envir"))
   
-}
-
-#' @export
-templateSub.function <- function(x, ...) {
-
-  newBody <- templateSub(eval(call("template", body(x))), ...)
-  body(x) <- parse(text = unclass(newBody))
-  x
-  
-}
-
-templateAsFun <- function(x, parent = parent.frame()) {
-
-  force(x)
-  force(parent)
-
-  function(...) {
-    eval(parse(text = x), envir = list(...), enclos = parent)
-  }
-
 }
 
 #' @rdname utils
 #' @export
-templateEvalHere <- function(template, envir = parent.frame(), ...) {
-  eval(parse(text = template), envir = envir, ...)
+tmplEval <- function(x, envir = new.env(parent = parent.frame()), ...) {
+  template <- tmplUpdate(x, ...)
+  eval(parse(text = template), envir = envir, enclos = attr(x, "envir"))
 }
-
-#' @rdname utils
-#' @export
-templateEvalLocal <- function(template, envir = parent.frame(), ...) {
-  eval(parse(text = template), envir = new.env(parent = envir), ...)
-}
-

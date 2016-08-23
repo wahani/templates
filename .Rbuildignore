@@ -2,3 +2,4 @@
 ^\.Rproj\.user$
 ^Readme\.Rmd$
 ^Readme\.md$
+^prepareRepo\.R$

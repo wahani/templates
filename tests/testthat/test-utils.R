@@ -4,101 +4,74 @@ test_that("Template", {
 
 ##############################################################################
 
-  t1 <- template({
-    return({{ 2 * a }})
+  t1 <- tmpl( ~ {
+    return(2 * {{ a }})
   })
 
   expectEqual(
     as.function(
       t1,
-      a ~ x * 2,
-      eval = FALSE
+      a ~ x * 2
     )(x = 1),
     4
   )
 
-  expectEqual(
-    as.function(
-      t1
-    )(a = 1),
-    2
+  testthat::expect_error(
+    as.function(t1), "'a' not found"
   )
 
-  sqlTemplate <- template(
-    `( {{ collapse(ids) }} )`
+  sqlTemplate <- tmpl(
+    ~ {{ collapse(ids) }}
   )
 
   collapse <- function(x) paste(x, collapse = ", ")
 
   expectEqual(
     as.character(
-      update(
+      tmpl(
         sqlTemplate,
-        ids = 1:2,
-        eval = TRUE
+        ids = 1:2
       )),
-    "( 1, 2 )"
-  )
-
-  testthat::expect_warning(
-    unclass(
-      update(
-        sqlTemplate,
-        ids = 1:2,
-        eval = FALSE
-      )),
-    "length = 1"
+    "1, 2"
   )
 
   t2 <- function(x) {
-    return({{ 2 * a }})
+    return(2 * {{ a }})
   }
 
   expectEqual(
-    update(t2, a ~ x * 2, eval = FALSE)(2),
+    tmpl(t2, a ~ x * 2)(2),
     8
-  )
-
-  expectEqual(
-    local({
-      a <- 2
-      t2 <- function(x) {
-        return({{ 2 * a }})
-      }
-      update(t2, eval = FALSE)(80)
-    }),
-    4
   )
 
 
 ##############################################################################
 
-  t3 <- template(
+  t3 <- tmpl(
     "{{ (function() {1})() }}
      {{ '\"HuHu\"' }}"
   )
 
-  t3Eval <- template(
+  t3Eval <- tmpl(
     "1
      \"HuHu\""
   )
 
   expectEqual(
-    unclass(update(t3, eval = TRUE)),
+    unclass(tmpl(t3, b ~ forceEval)),
     unclass(t3Eval)
   )
 
 ##############################################################################
 
-  t4 <- template(
+  t4 <- tmpl(
     "{{ a }}"
   )
 
   expectEqual(
     as.function(
       t4,
-      a ~ 2,
-      eval = FALSE
+      a ~ 2
     )(),
     2
   )
@@ -106,33 +79,32 @@ test_that("Template", {
   expectEqual(
     as.function(
       t4,
-      a ~ x * 2,
-      eval = FALSE
+      a ~ x * 2  
     )(x = 2),
     4
   )
 
   expectEqual(
     as.function(
-      t4
+      t4,
+      a ~ a
     )(a = 1),
     1
   )
 
 ##############################################################################
 
-  t5 <- template({
-    x <- 2
+  t5 <- tmpl( ~ {
+    2
   })
 
-  t6 <- template({
+  t6 <- tmpl( ~ {
     y <- 1
     y
   })
 
-  templateEvalHere(t5)
-  expectEqual(x, 2)
-  expectEqual(templateEvalLocal(t6), 1)
+  expectEqual(tmplEval(t5), 2)
+  expectEqual(tmplEval(t6), 1)
   expectEqual(exists("y"), FALSE)
   
 })

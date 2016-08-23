@@ -11,8 +11,8 @@
 library("templates")
 library("magrittr")
 
-sqlTemplate <- template(
-  `SELECT *
+sqlTemplate <- tmpl(
+  ~ `SELECT *
    FROM someTable
    WHERE something IN {{ collapseInParan(ids) }};`
 )
@@ -21,7 +21,7 @@ collapseInParan <- function(x) {
   paste("(", paste(x, collapse = ", "), ")")
 }
 
-update(
+tmpl(
   sqlTemplate, 
   ids = 1:10
 )
@@ -46,7 +46,7 @@ tFun <- function() {
   invisible(NULL)
 }
 
-update(tFun, begin ~ "This is a")
+tmpl(tFun, begin ~ "This is a")
 ```
 
 ```
@@ -58,29 +58,16 @@ update(tFun, begin ~ "This is a")
 ## }
 ```
 
-```r
-update(tFun, begin ~ "This is a", eval = FALSE)
-```
-
-```
-## function () 
-## {
-##     s <- "great idea!!!"
-##     cat(toupper("This is a"), s, "\n")
-##     invisible(NULL)
-## }
-```
-
 
 #### Expressions:
 
 
 ```r
-tExpr <- template({
+tExpr <- tmpl( ~ {
   cat({{ toupper(begin) }}, "\n")
 })
 
-update(tExpr, begin ~ "hi", eval = TRUE)
+tmpl(tExpr, begin ~ "hi")
 ```
 
 ```
@@ -102,13 +89,13 @@ as.function(tExpr, begin ~ "hi")()
 
 
 ```r
-tChar <- template('{
+tChar <- tmpl('{
   cat({{ toupper(begin) }}, "\n")
 }')
 
 tChar %>%
-  update(begin ~ "hi") %>%
-  templateEvalHere
+  tmpl(begin ~ "hi") %>%
+  tmplEval
 ```
 
 ```

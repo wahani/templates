@@ -7,7 +7,6 @@ Depends:
     R (>= 3.3.1),
     methods
 Imports:
-    lazyeval,
     stringr,
     dat,
     magrittr,
