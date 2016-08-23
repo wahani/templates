@@ -1,8 +1,12 @@
 Package: templates
 Title: Template-Programming
-Version: 0.0.0.9000
+Version: 0.0.1
 Authors@R: person("Sebastian", "Warnholz", email = "wahani@gmail.com", role = c("aut", "cre"))
-Description: Tools for programming with templates.
+Description: Provides tools to work with template code and text in R. It aims to
+    provide a simple substitutions mechanism for R-expressions inside these
+    templates. Templates can be written in other languages like 'MySQL', can
+    simply be represented by characters in R, or can themselves be R-expressions
+    or functions.
 Depends:
     R (>= 3.3.1),
     methods
@@ -15,5 +19,8 @@ License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true
 Suggests:
-    testthat
+    testthat,
+    knitr,
+    rmarkdown
 RoxygenNote: 5.0.1
+VignetteBuilder: knitr

@@ -1,6 +1,6 @@
 ---
 title: "Template Programming in R"
-date: "2016-08-23"
+date: "`r Sys.Date()`"
 output: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{Template Programming in R}
@@ -11,13 +11,14 @@ vignette: >
 
 ## Template-Programming in R
 
-Provides tools to work with template code and text in R. It aims to provide a simple substitutions mechanism for R-expressions inside these templates. Templates can be written in other languages like 'MySQL', can simply be represented by characters in R, or can themselves be R-expressions or functions.
+```{r results='asis', echo=FALSE}
+cat(gsub("\\n   ", "", packageDescription("templates", fields = "Description")))
+```
 
 
 ## Installation
 
-
-```r
+```{r eval = FALSE}
 devtools::install_github("wahani/templates")
 ```
 
@@ -39,8 +40,7 @@ Actually this package does not aim at providing parameterized sql-like queries;
 but it implements the core idea behind it. Here we can use R-snippets inside
 expressions, characters, or functions to inject code or rather text:
 
-
-```r
+```{r}
 library("templates")
 library("magrittr")
 
@@ -61,12 +61,6 @@ tmplUpdate(
 )
 ```
 
-```
-## SELECT *
-##    FROM someTable
-##    WHERE something IN ( 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 );
-```
-
 The double `{` denote a region to be evaluated. They can contain arbitrary
 R-code.
 
@@ -77,8 +71,7 @@ This may be useful to inject code into functions. For example to minimize the
 need to query a database for simple requests when other options - like closures -
 are not feasible.
 
-
-```r
+```{r}
 tFun <- function() {
   s <- "great idea!!!"
   cat({{ toupper(begin) }}, s, "\n")
@@ -88,15 +81,6 @@ tFun <- function() {
 tmpl(tFun, begin ~ "This is a")
 ```
 
-```
-## function () 
-## {
-##     s <- "great idea!!!"
-##     cat("THIS IS A", s, "\n")
-##     invisible(NULL)
-## }
-```
-
 
 ### Expressions:
 
@@ -104,35 +88,14 @@ This might be helpful whenever we need to reuse 'code' where the environment
 where it is evaluated has special meaning. This, for example, can be used to
 implement parameterized reactive expressions in a shiny app.
 
-
-```r
+```{r}
 tExpr <- tmpl( ~ {
   cat({{ toupper(begin) }}, "\n")
 })
 
 tmpl(tExpr, begin ~ "hi")
-```
-
-```
-## {
-##     cat("HI", "\n")
-## }
-```
-
-```r
 tmplAsFun(tExpr, begin ~ "hi")()
-```
-
-```
-## HI
-```
-
-```r
 tmplEval(tExpr, begin ~ "hi")
-```
-
-```
-## HI
 ```
 
 
@@ -142,8 +105,7 @@ The leading example of using characters as template are parameterized sql
 queries. Like any other template they can represent also R-code and then later
 be evaluated.
 
-
-```r
+```{r}
 tChar <- tmpl('{
   cat({{ toupper(begin) }}, "\n")
 }')
@@ -151,8 +113,4 @@ tChar <- tmpl('{
 tChar %>%
   tmpl(begin ~ "hi") %>%
   tmplEval
-```
-
-```
-## HI
 ```
