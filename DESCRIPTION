@@ -1,5 +1,5 @@
 Package: templates
-Title: Template-Programming
+Title: Template Programming
 Version: 0.0.1
 Authors@R: person("Sebastian", "Warnholz", email = "wahani@gmail.com", role = c("aut", "cre"))
 Description: Provides tools to work with template code and text in R. It aims to
