@@ -1,8 +1,3 @@
-addClass <- function (x, class) {
-    class(x) <- unique(c(class, class(x)))
-    x
-}
-
 addAttr <- function(x, ...) {
   newAttr <- list(...)
   for (n in names(newAttr)) {
