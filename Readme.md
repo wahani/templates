@@ -1,12 +1,5 @@
----
-title: "Template Programming in R"
-date: "2016-08-23"
-output: rmarkdown::html_vignette
-vignette: >
-  %\VignetteIndexEntry{Template Programming in R}
-  %\VignetteEngine{knitr::rmarkdown}
-  %\VignetteEncoding{UTF-8}
----
+[![Travis-CI Build Status](https://travis-ci.org/wahani/templates.svg?branch=master)](https://travis-ci.org/wahani/templates)
+[![Coverage Status](https://img.shields.io/codecov/c/github/wahani/templates/master.svg)](https://codecov.io/github/wahani/templates?branch=master)
 
 
 ## Template-Programming in R
