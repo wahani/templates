@@ -64,7 +64,7 @@ tmplUtility <- function(.t, ..., .utility) {
     substitutes <- unlist(substitutes, recursive = FALSE)
   }
   
-  ind <- flatmap(substitutes, inherits , "formula")
+  ind <- flatmap(substitutes, inherits, what = "formula")
   if (any(ind)) {
     subtExpr <- extract(substitutes, ind) %>% flatmap(f ~ deparse(f[[2]]))
     exprList <- extract(substitutes, ind) %>% flatmap(f ~ deparse(f[[3]]))
