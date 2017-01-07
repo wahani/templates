@@ -1,5 +1,5 @@
 ---
-title: "Template Programming in R"
+title: "Programming with Templates in R"
 date: "`r Sys.Date()`"
 output: rmarkdown::html_vignette
 vignette: >
@@ -9,7 +9,7 @@ vignette: >
 ---
 
 
-## Template-Programming in R
+## Programming with Templates
 
 ```{r results='asis', echo=FALSE}
 cat(gsub("\\n   ", "", packageDescription("templates", fields = "Description")))
@@ -18,18 +18,18 @@ cat(gsub("\\n   ", "", packageDescription("templates", fields = "Description")))
 
 ## Installation
 
+
+### From GitHub
+
 ```{r eval = FALSE}
 devtools::install_github("wahani/templates")
 ```
 
+### From CRAN
 
-## Why should you care?
-
-- Probably you shouldn't
-- This is the low level implementation
-    - to reuse shinys reactives
-    - to have parameterized sql-queries in `.sql` files
-    - to do more meta-programming
+```{r eval = FALSE}
+install.packages("templates")
+```
 
 
 ## Some examples
@@ -38,7 +38,7 @@ devtools::install_github("wahani/templates")
 
 Actually this package does not aim at providing parameterized sql-like queries;
 but it implements the core idea behind it. Here we can use R-snippets inside
-expressions, characters, or functions to inject code or rather text:
+expressions, characters, or functions to inject code:
 
 ```{r}
 library("templates")

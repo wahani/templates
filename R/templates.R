@@ -16,6 +16,8 @@
 #'   environment in which they are evaluated is stored in the object. They can
 #'   be further augmented by supplying arguments in \code{...}.
 #'
+#' @seealso \link{tmplUpdate}, \link{tmplEval}
+#'
 #' @examples
 #'
 #' tmpl("Hi {{ toupper(a) }}!", a = "there")

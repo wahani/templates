@@ -46,4 +46,7 @@ tmpl( ~ {y <- {{ a }}}, a ~ x + 1)
 tmpl(function(x) {{ a }} + x, a ~ 1)
 
 }
+\seealso{
+\link{tmplUpdate}, \link{tmplEval}
+}
 

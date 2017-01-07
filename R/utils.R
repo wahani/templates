@@ -14,6 +14,9 @@
 #' \code{tmplUpdate} will evaluate all snippets in a template. Objects are
 #' searched for in the list of arguments supplied as \code{...} and the
 #' environment of the template. The results are substituted with the snippts.
+#'
+#' \code{tmplEval} will evaluate the template in place or in the specified
+#' evironment after substituting the elements in \code{...}.
 #' 
 #' @examples
 #' tmpl("This is {{ a }} very similar to {{ b }}", a = "actually", b = "sprintf")
