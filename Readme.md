@@ -1,27 +1,34 @@
 [![Travis-CI Build Status](https://travis-ci.org/wahani/templates.svg?branch=master)](https://travis-ci.org/wahani/templates)
 [![Coverage Status](https://img.shields.io/codecov/c/github/wahani/templates/master.svg)](https://codecov.io/github/wahani/templates?branch=master)
+[![CRAN_Status_Badge](http://www.r-pkg.org/badges/version/templates)](http://cran.r-project.org/package=templates)
+[![Downloads](http://cranlogs.r-pkg.org/badges/templates?color=brightgreen)](http://www.r-pkg.org/pkg/templates)
 
 
-## Template-Programming in R
+## Programming with Templates
 
-Provides tools to work with template code and text in R. It aims to provide a simple substitutions mechanism for R-expressions inside these templates. Templates can be written in other languages like 'SQL', can simply be represented by characters in R, or can themselves be R-expressions or functions.
+Provides tools to work with template code and text in R. It aims to
+provide a simple substitutions mechanism for R-expressions inside these
+templates. Templates can be written in other languages like 'SQL', can
+simply be represented by characters in R, or can themselves be R-expressions
+or functions.
 
 
 ## Installation
+
+
+### From GitHub
 
 
 ```r
 devtools::install_github("wahani/templates")
 ```
 
+### From CRAN
 
-## Why should you care?
 
-- Probably you shouldn't
-- This is the low level implementation
-    - to reuse shinys reactives
-    - to have parameterized sql-queries in `.sql` files
-    - to do more meta-programming
+```r
+install.packages("templates")
+```
 
 
 ## Some examples
@@ -30,7 +37,7 @@ devtools::install_github("wahani/templates")
 
 Actually this package does not aim at providing parameterized sql-like queries;
 but it implements the core idea behind it. Here we can use R-snippets inside
-expressions, characters, or functions to inject code or rather text:
+expressions, characters, or functions to inject code:
 
 
 ```r
