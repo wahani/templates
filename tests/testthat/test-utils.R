@@ -123,5 +123,22 @@ test_that("Template", {
     tmplEval(tmpl("{{ a }} + {{ b }}", list(a = 1), b ~ 2)),
     3
   )
+
+################################################################################
+  
+  expectEqual(
+    as.character(tmpl("hi {{ null }}", null = NULL)),
+    "hi "
+  )
+
+  expectEqual(
+    as.character(tmpl("{{ first }} {{ second }}", first = 1, second = NULL)),
+    "1 "
+  )
+
+  expectEqual(
+    as.character(tmpl("{{ first }} {{ second }}", first = NULL, second = 1)),
+    " 1"
+  )
   
 })

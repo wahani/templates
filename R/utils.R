@@ -37,8 +37,8 @@ tmplUpdate <- function(.t, ...) UseMethod("tmplUpdate")
 tmplUpdate.tmpl <- function(.t, ...) {
 
   evaluator <- function(x, envir, enclos) {
-     flatmap(x, function(sexpr) {
-      as.character(eval(parse(text = sexpr), envir = envir, enclos = enclos))
+    flatmap(x, function(sexpr) {
+      asCharacter(eval(parse(text = sexpr), envir = envir, enclos = enclos))
     })
   }
 

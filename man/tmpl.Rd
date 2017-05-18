@@ -4,8 +4,8 @@
 \alias{tmpl}
 \alias{tmpl.character}
 \alias{tmpl.formula}
-\alias{tmpl.function}
 \alias{tmpl.tmpl}
+\alias{tmpl.function}
 \title{Template constructors}
 \usage{
 tmpl(.t, ...)
@@ -49,4 +49,3 @@ tmpl(function(x) {{ a }} + x, a ~ 1)
 \seealso{
 \link{tmplUpdate}, \link{tmplEval}
 }
-
