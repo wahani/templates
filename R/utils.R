@@ -3,7 +3,7 @@
 #' Functions operating on \link{tmpl} objects. They can be updated and / or
 #' evaluated as an expression.
 #' 
-#' @param .t (tmpl) and object of class 'tmpl'
+#' @param .t (tmpl) and object of class \code{tmpl}
 #' @param ... (name = value | name ~ value) name-value expressions used to
 #'   update the snippets in \code{x}
 #' @param .envir (environment) the environment in which the template is
@@ -13,10 +13,10 @@
 #' 
 #' \code{tmplUpdate} will evaluate all snippets in a template. Objects are
 #' searched for in the list of arguments supplied as \code{...} and the
-#' environment of the template. The results are substituted with the snippts.
+#' environment of the template. The results are substituted with the snippets.
 #'
 #' \code{tmplEval} will evaluate the template in place or in the specified
-#' evironment after substituting the elements in \code{...}.
+#' environment after substituting the elements in \code{...}.
 #' 
 #' @examples
 #' tmpl("This is {{ a }} very similar to {{ b }}", a = "actually", b = "sprintf")

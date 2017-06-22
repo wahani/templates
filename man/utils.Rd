@@ -19,7 +19,7 @@ tmplEval(.t, ..., .envir = new.env(parent = parent.frame()))
 tmplAsFun(.t, ...)
 }
 \arguments{
-\item{.t}{(tmpl) and object of class 'tmpl'}
+\item{.t}{(tmpl) and object of class \code{tmpl}}
 
 \item{...}{(name = value | name ~ value) name-value expressions used to
 update the snippets in \code{x}}
@@ -34,10 +34,10 @@ evaluated as an expression.
 \details{
 \code{tmplUpdate} will evaluate all snippets in a template. Objects are
 searched for in the list of arguments supplied as \code{...} and the
-environment of the template. The results are substituted with the snippts.
+environment of the template. The results are substituted with the snippets.
 
 \code{tmplEval} will evaluate the template in place or in the specified
-evironment after substituting the elements in \code{...}.
+environment after substituting the elements in \code{...}.
 }
 \examples{
 tmpl("This is {{ a }} very similar to {{ b }}", a = "actually", b = "sprintf")

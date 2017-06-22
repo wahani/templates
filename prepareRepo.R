@@ -13,4 +13,3 @@ writeLines(c(travis, codecov, cran, downloads, readme), "Readme.md")
 
 
 library("templates")
-
