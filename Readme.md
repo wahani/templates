@@ -7,7 +7,7 @@
 ## Programming with Templates
 
 Provides tools to work with template code and text in R. It aims to
-provide a simple substitutions mechanism for R-expressions inside these
+provide a simple substitution mechanism for R-expressions inside these
 templates. Templates can be written in other languages like 'SQL', can
 simply be represented by characters in R, or can themselves be R-expressions
 or functions.

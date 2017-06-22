@@ -1,0 +1,7 @@
+* templates 0.2.0
+
+- CRAN release
+- Bugfix when passing arguments with value NULL to templates
+
+
+
