@@ -1,3 +1,10 @@
+* templates 0.3.0
+
+- CRAN release
+- Bugfix when passing lists of arguments
+- Change when using several curly braces (see #3 on GitHub). Now the inner most
+  set of '{{' define a 'chunk'.
+
 * templates 0.2.0
 
 - CRAN release
