@@ -70,7 +70,7 @@ tmplUtility <- function(.t, ..., .utility) {
     names(substitutes)[ind] <- subtExpr
   }
 
-  stopifnot(!is.null(names(substitutes)))
+  stopifnot(length(substitutes) == 0 || !is.null(names(substitutes)))
 
   for (element in substitutes) # unlist 1st level nested list structure
     if (is.list(element)) substitutes[names(element)] <- element[names(element)]
@@ -87,7 +87,7 @@ tmplUtility <- function(.t, ..., .utility) {
   })
 
   tmplConstructor(ret, .envir = attr(.t, "envir"))
-  
+
 }
 
 #' @rdname utils
