@@ -150,7 +150,7 @@ test_that("Template", {
 
   expectEqual(
     as.character(tmpl(tmpl("{{{{ a }}}}", a = "b"), b = "c")),
-    "\\section{foo}"
+    "c"
   )
 
 })
