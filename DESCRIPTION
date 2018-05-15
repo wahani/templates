@@ -1,6 +1,6 @@
 Package: templates
 Title: A System for Working with Templates
-Version: 0.2.0
+Version: 0.2.1
 Authors@R: person("Sebastian", "Warnholz", email = "wahani@gmail.com", role = c("aut", "cre"))
 Description: Provides tools to work with template code and text in R. It aims to
     provide a simple substitution mechanism for R-expressions inside these
@@ -8,7 +8,7 @@ Description: Provides tools to work with template code and text in R. It aims to
     simply be represented by characters in R, or can themselves be R-expressions
     or functions.
 Depends:
-    R (>= 3.3.1),
+    R (>= 3.3.0),
     methods
 Imports:
     stringr,
