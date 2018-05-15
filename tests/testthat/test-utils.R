@@ -79,7 +79,7 @@ test_that("Template", {
   expectEqual(
     tmplAsFun(
       t4,
-      a ~ x * 2  
+      a ~ x * 2
     )(x = 2),
     4
   )
@@ -141,7 +141,6 @@ test_that("Template", {
     " 1"
   )
 
-
 ################################################################################
 
   expectEqual(
@@ -156,5 +155,16 @@ test_that("Template", {
 
 ################################################################################
 
+  expectEqual(
+    # from #3
+    as.character(tmpl("\\section{{{ sectionName }}}", sectionName = "foo")),
+    "\\section{foo}"
+  )
+
+  expectEqual(
+    # implication from #3
+    as.character(tmpl(tmpl("{{{{ a }}}}", a = "b"), b = "c")),
+    "c"
+  )
 
 })
