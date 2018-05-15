@@ -12,4 +12,4 @@ addAttr <- function(x, ...) {
   x
 }
 
-getPattern <- function(case) "\\{\\{((?!\\{\\{)[\\\n[:print:]])*\\}\\}"
+getPattern <- function() "\\{\\{((?!\\{)([\\\n[:print:]])*?)\\}\\}"

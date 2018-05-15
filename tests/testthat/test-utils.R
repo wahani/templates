@@ -79,7 +79,7 @@ test_that("Template", {
   expectEqual(
     tmplAsFun(
       t4,
-      a ~ x * 2  
+      a ~ x * 2
     )(x = 2),
     4
   )
@@ -125,7 +125,7 @@ test_that("Template", {
   )
 
 ################################################################################
-  
+
   expectEqual(
     as.character(tmpl("hi {{ null }}", null = NULL)),
     "hi "
@@ -140,5 +140,17 @@ test_that("Template", {
     as.character(tmpl("{{ first }} {{ second }}", first = NULL, second = 1)),
     " 1"
   )
-  
+
+################################################################################
+
+  expectEqual(
+    as.character(tmpl("\\section{{{ sectionName }}}", sectionName = "foo")),
+    "\\section{foo}"
+  )
+
+  expectEqual(
+    as.character(tmpl(tmpl("{{{{ a }}}}", a = "b"), b = "c")),
+    "\\section{foo}"
+  )
+
 })
