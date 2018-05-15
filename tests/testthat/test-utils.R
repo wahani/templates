@@ -125,7 +125,7 @@ test_that("Template", {
   )
 
 ################################################################################
-  
+
   expectEqual(
     as.character(tmpl("hi {{ null }}", null = NULL)),
     "hi "
@@ -140,5 +140,21 @@ test_that("Template", {
     as.character(tmpl("{{ first }} {{ second }}", first = NULL, second = 1)),
     " 1"
   )
-  
+
+
+################################################################################
+
+  expectEqual(
+    # from #2
+    as.character(templates::tmpl(
+      "{{ paste(arg1, collapse = '') }}{{a}}{{b}}",
+      arg1 = letters[1:2],
+      arg2 = list(a = "a", b = "b")
+    )),
+    "abab"
+  )
+
+################################################################################
+
+
 })

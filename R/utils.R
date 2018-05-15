@@ -61,12 +61,11 @@ tmplUpdate.function <- function(.t, ...) {
 tmplUtility <- function(.t, ..., .utility) {
 
   substitutes <- list(...)
+  stopifnot(!is.null(names(substitutes)))
 
-  ind <- flatmap(substitutes, is.list)
-  if (any(ind)) {
-    substitutes <- unlist(substitutes, recursive = FALSE)
-  }
-  
+  for (element in substitutes) # unlist 1st level nested list structure
+    if (is.list(element)) substitutes[names(element)] <- element[names(element)]
+
   ind <- flatmap(substitutes, inherits, what = "formula")
   if (any(ind)) {
     subtExpr <- extract(substitutes, ind) %>% flatmap(f ~ deparse(f[[2]]))
