@@ -144,11 +144,25 @@ test_that("Template", {
 ################################################################################
 
   expectEqual(
+    # from #2
+    as.character(templates::tmpl(
+      "{{ paste(arg1, collapse = '') }}{{a}}{{b}}",
+      arg1 = letters[1:2],
+      arg2 = list(a = "a", b = "b")
+    )),
+    "abab"
+  )
+
+################################################################################
+
+  expectEqual(
+    # from #3
     as.character(tmpl("\\section{{{ sectionName }}}", sectionName = "foo")),
     "\\section{foo}"
   )
 
   expectEqual(
+    # implication from #3
     as.character(tmpl(tmpl("{{{{ a }}}}", a = "b"), b = "c")),
     "c"
   )

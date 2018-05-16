@@ -62,11 +62,6 @@ tmplUtility <- function(.t, ..., .utility) {
 
   substitutes <- list(...)
 
-  ind <- flatmap(substitutes, is.list)
-  if (any(ind)) {
-    substitutes <- unlist(substitutes, recursive = FALSE)
-  }
-  
   ind <- flatmap(substitutes, inherits, what = "formula")
   if (any(ind)) {
     subtExpr <- extract(substitutes, ind) %>% flatmap(f ~ deparse(f[[2]]))
@@ -74,6 +69,11 @@ tmplUtility <- function(.t, ..., .utility) {
     substitutes <- replace(substitutes, ind, exprList)
     names(substitutes)[ind] <- subtExpr
   }
+
+  stopifnot(length(substitutes) == 0 || !is.null(names(substitutes)))
+
+  for (element in substitutes) # unlist 1st level nested list structure
+    if (is.list(element)) substitutes[names(element)] <- element[names(element)]
 
   replacements <-
     stringr::str_extract_all(.t, pattern = getPattern()) %>%
@@ -87,7 +87,7 @@ tmplUtility <- function(.t, ..., .utility) {
   })
 
   tmplConstructor(ret, .envir = attr(.t, "envir"))
-  
+
 }
 
 #' @rdname utils
