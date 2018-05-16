@@ -36,9 +36,9 @@ tmplUpdate <- function(.t, ...) UseMethod("tmplUpdate")
 #' @rdname utils
 tmplUpdate.tmpl <- function(.t, ...) {
 
-  evaluator <- function(x, envir, enclos) {
+  evaluator <- function(x, envir) {
     flatmap(x, function(sexpr) {
-      asCharacter(eval(parse(text = sexpr), envir = envir, enclos = enclos))
+      asCharacter(eval(parse(text = sexpr), envir = envir))
     })
   }
 
@@ -72,15 +72,21 @@ tmplUtility <- function(.t, ..., .utility) {
 
   stopifnot(length(substitutes) == 0 || !is.null(names(substitutes)))
 
-  for (element in substitutes) # unlist 1st level nested list structure
-    if (is.list(element)) substitutes[names(element)] <- element[names(element)]
+  nestedElements <- substitutes
+  for (element in nestedElements) # unlist 1st level nested list structure
+    if (is.list(element)) nestedElements[names(element)] <- element[names(element)]
+
+  substitutes <- list2env(
+    substitutes,
+    parent = list2env(nestedElements, parent = attr(.t, "envir"))
+  )
 
   replacements <-
     stringr::str_extract_all(.t, pattern = getPattern()) %>%
     unlist %>%
     stringr::str_replace_all("(^\\{\\{)|(\\}\\}$)", "") %>%
     stringr::str_trim() %>%
-    .utility(substitutes, attr(.t, "envir"))
+    .utility(substitutes)
 
   ret <- Reduce(x = replacements, init = .t, function(acc, r) {
     stringr::str_replace(acc, getPattern(), r)
@@ -106,5 +112,5 @@ tmplAsFun <- function(.t, ...) {
   function(...) {
     eval(parse(text = .t), envir = list(...), enclos = attr(.t, "envir"))
   }
-    
+
 }
