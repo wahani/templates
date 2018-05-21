@@ -1,9 +1,9 @@
 * templates 0.3.0
 
 - CRAN release
-- Bugfix when passing lists of arguments
+- Bugfix when passing lists of arguments (see #2 on GitHub).
 - Change when using several curly braces (see #3 on GitHub). Now the inner most
-  set of '{{' define a 'chunk'.
+  set of '{{' define a 'snippet'.
 
 * templates 0.2.0
 

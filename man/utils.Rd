@@ -34,7 +34,7 @@ evaluated as an expression.
 \details{
 \code{tmplUpdate} will evaluate all snippets in a template. Objects are
 searched for in the list of arguments supplied as \code{...} and the
-environment of the template. The results are substituted with the snippets.
+environment of the template. The results are substituted within the snippets.
 
 \code{tmplEval} will evaluate the template in place or in the specified
 environment after substituting the elements in \code{...}.
