@@ -1,0 +1,1 @@
+getPattern <- function() "\\{\\{((?!\\{)([\\\n[:print:]])*?)\\}\\}"
