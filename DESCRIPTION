@@ -8,7 +8,7 @@ Description: Provides tools to work with template code and text in R. It aims to
     simply be represented by characters in R, or can themselves be R-expressions
     or functions.
 Depends:
-    R (>= 3.3.0)
+    R (>= 3.4.0)
 Imports:
     stringr,
     dat,

@@ -1,7 +1,8 @@
 ## Test environments
-* local ubuntu 16.10 install, R 3.3.2
-* ubuntu 12.04 (on travis-ci), R 3.3.2
-* win-builder (devel)
+There are none.
+- local ubuntu 18.04 install, R 3.4.4
+- ubuntu (on travis-ci)
+- win-builder (devel)
 
 ## R CMD check results
 
