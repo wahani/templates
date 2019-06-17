@@ -1,3 +1,9 @@
+* templates 0.4.0
+
+- CRAN release
+- Bugfix when passing '\' as arguments into a template (see #4 on GitHub)
+- Resolve dependency to 'dat'
+
 * templates 0.3.0
 
 - CRAN release

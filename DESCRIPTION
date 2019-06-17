@@ -1,6 +1,6 @@
 Package: templates
 Title: A System for Working with Templates
-Version: 0.3.0
+Version: 0.3.2
 Authors@R: person("Sebastian", "Warnholz", email = "wahani@gmail.com", role = c("aut", "cre"))
 Description: Provides tools to work with template code and text in R. It aims to
     provide a simple substitution mechanism for R-expressions inside these
@@ -11,7 +11,6 @@ Depends:
     R (>= 3.4.0)
 Imports:
     stringr,
-    dat,
     magrittr
 License: MIT + file LICENSE
 Encoding: UTF-8
@@ -21,5 +20,5 @@ Suggests:
     knitr,
     rmarkdown,
     covr
-RoxygenNote: 6.0.1
+RoxygenNote: 6.1.1
 VignetteBuilder: knitr

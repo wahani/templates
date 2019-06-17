@@ -45,8 +45,8 @@ tmplUpdate.tmpl <- function(.t, ...) {
   deparseFormulas <- function(substitutes) {
     ind <- flatmap(substitutes, inherits, what = "formula")
     if (any(ind)) {
-      subtExpr <- extract(substitutes, ind) %>% flatmap(f ~ deparse(f[[2]]))
-      exprList <- extract(substitutes, ind) %>% flatmap(f ~ deparse(f[[3]]))
+      subtExpr <- extract(substitutes, ind) %>% flatmap(function(f) deparse(f[[2]]))
+      exprList <- extract(substitutes, ind) %>% flatmap(function(f) deparse(f[[3]]))
       substitutes <- replace(substitutes, ind, exprList)
       names(substitutes)[ind] <- subtExpr
     }
@@ -73,7 +73,7 @@ tmplUpdate.tmpl <- function(.t, ...) {
 
   substituteSnippets <- function(template, replacements) {
     ret <- Reduce(x = replacements, init = template, function(acc, r) {
-      stringr::str_replace(acc, getPattern(), r)
+      sub(getPattern(), gsub("\\\\", "\\\\\\\\", r), acc, perl = TRUE)
     })
     tmplConstructor(ret, .envir = attr(template, "envir"))
   }
