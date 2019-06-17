@@ -167,4 +167,24 @@ test_that("Template", {
     "c"
   )
 
+################################################################################
+
+  expectEqual(
+    # from #4
+    as.character(tmplUpdate(tmpl("{{ test }} \\\\"), test = "\\\\")),
+    "\\\\ \\\\"
+  )
+
+  expectEqual(
+    # from #4
+    as.character(tmplUpdate(tmpl("{{ test }} \\\\"), test = "\n")),
+    "\n \\\\"
+  )
+
+  expectEqual(
+    # from #4
+    as.character(tmplUpdate(tmpl("{{ test }} \\\\"), test = "\\n")),
+    "\\n \\\\"
+  )
+
 })

@@ -73,7 +73,7 @@ tmplUpdate.tmpl <- function(.t, ...) {
 
   substituteSnippets <- function(template, replacements) {
     ret <- Reduce(x = replacements, init = template, function(acc, r) {
-      stringr::str_replace(acc, getPattern(), r)
+      sub(getPattern(), gsub("\\\\", "\\\\\\\\", r), acc, perl = TRUE)
     })
     tmplConstructor(ret, .envir = attr(template, "envir"))
   }
