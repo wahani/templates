@@ -1,6 +1,6 @@
 ## Test environments
-There are none.
-- local ubuntu 18.04 install, R 3.4.4
+
+- local ubuntu 19.04 install, R 3.5.2
 - ubuntu (on travis-ci)
 - win-builder (devel)
 
